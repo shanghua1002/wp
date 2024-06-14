@@ -1,0 +1,21 @@
+<html>
+
+<body>
+    <button onclick="move()">Click Me</button>
+    <script>
+        function move() {
+            left += 10;
+            b.style = `position:${position}; width:${width}; height:${height}; left:${left}; top:${top1};`;
+        }
+        let position = "absolute";
+        let width = 60;
+        let height = 40;
+        let left = 50;
+        let top1 = 250;
+        let b = document.querySelector('button');
+
+        b.style = `position:${position}; width:${width}; height:${height}; left:${left}; top:${top1};`;
+    </script>
+</body>
+
+</html>
