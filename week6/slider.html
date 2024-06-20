@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        div {
+            width: 10px;
+            height: 400px;
+            background: blue;
+            transition: width 1s;
+        }
+
+        .expanded {
+            width: 250px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>The transition Property</h1>
+
+    <p>Click the button below to toggle the width of the div element:</p>
+    <button onclick="button()">button</button>
+    <div id="myDiv"></div>
+
+    <script>
+        function button() {
+            var element = document.getElementById("myDiv");
+            element.classList.toggle("expanded");
+        }
+    </script>
+
+</body>
+
+</html>
