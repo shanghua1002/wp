@@ -1,0 +1,168 @@
+const width = 10;
+const height = 10;
+const mineCount = 20;
+let flags = 0;
+let cellsOpened = 0;
+let gameOver = false;
+
+function createBoard() {
+    const board = [];
+    const minesArray = Array(mineCount).fill('mine');
+    const emptyArray = Array(width * height - mineCount).fill('empty');
+    const gameArray = emptyArray.concat(minesArray);
+    const shuffledArray = gameArray.sort(() => Math.random() - 0.5);
+
+    for (let i = 0; i < width * height; i++) {
+        const cell = document.createElement('div');
+        cell.setAttribute('id', i);
+        cell.classList.add('cell');
+        cell.classList.add(shuffledArray[i]);
+        cell.addEventListener('click', function () {
+            clickCell(cell);
+        });
+        cell.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+            addFlag(cell);
+        });
+        board.push(cell);
+        document.getElementById('minesweeper').appendChild(cell);
+    }
+
+    // Add numbers
+    for (let i = 0; i < board.length; i++) {
+        let total = 0;
+        const isLeftEdge = (i % width === 0);
+        const isRightEdge = (i % width === width - 1);
+
+        if (board[i].classList.contains('empty')) {
+            if (i > 0 && !isLeftEdge && board[i - 1].classList.contains('mine')) total++;
+            if (i > 9 && !isRightEdge && board[i + 1 - width].classList.contains('mine')) total++;
+            if (i > 10 && board[i - width].classList.contains('mine')) total++;
+            if (i > 11 && !isLeftEdge && board[i - 1 - width].classList.contains('mine')) total++;
+            if (i < 98 && !isRightEdge && board[i + 1].classList.contains('mine')) total++;
+            if (i < 90 && !isLeftEdge && board[i - 1 + width].classList.contains('mine')) total++;
+            if (i < 88 && !isRightEdge && board[i + 1 + width].classList.contains('mine')) total++;
+            if (i < 89 && board[i + width].classList.contains('mine')) total++;
+            board[i].setAttribute('data', total);
+            if (total != 0) {
+                const hiddenText = document.createElement('span');
+                hiddenText.classList.add('hidden-text');
+                hiddenText.innerText = total;
+                board[i].appendChild(hiddenText);
+            }
+        }
+    }
+}
+
+function clickCell(cell) {
+    if (gameOver || cell.classList.contains('open') || cell.classList.contains('flag')) return;
+    if (cell.classList.contains('mine')) {
+        showAllMines();
+        return;
+    }
+
+    cell.classList.add('open');
+    cellsOpened++;
+    const hiddenText = cell.querySelector('.hidden-text');
+    if (hiddenText) {
+        hiddenText.style.visibility = 'visible';
+    }
+
+    if (cell.getAttribute('data') == 0) {
+        openAdjacentCells(cell.id);
+    }
+
+    checkWin();
+}
+
+function addFlag(cell) {
+    if (gameOver) return;
+    if (!cell.classList.contains('open') && (flags < mineCount || cell.classList.contains('flag'))) {
+        if (!cell.classList.contains('flag')) {
+            cell.classList.add('flag');
+            cell.innerHTML = '🚩';
+            flags++;
+            checkWin();
+        } else {
+            cell.classList.remove('flag');
+            cell.innerHTML = '';
+            flags--;
+        }
+    }
+}
+
+function showAllMines() {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+        if (cell.classList.contains('mine')) {
+            cell.classList.add('revealed');
+            cell.innerHTML = '💣';
+        }
+    });
+    document.getElementById('status').innerText = 'Game Over';
+    gameOver = true;
+}
+
+function openAdjacentCells(cellId) {
+    const isLeftEdge = (cellId % width === 0);
+    const isRightEdge = (cellId % width === width - 1);
+    setTimeout(() => {
+        if (cellId > 0 && !isLeftEdge) {
+            const newId = parseInt(cellId) - 1;
+            const newCell = document.getElementById(newId);
+            clickCell(newCell);
+        }
+        if (cellId > 9 && !isRightEdge) {
+            const newId = parseInt(cellId) + 1 - width;
+            const newCell = document.getElementById(newId);
+            clickCell(newCell);
+        }
+        if (cellId > 10) {
+            const newId = parseInt(cellId) - width;
+            const newCell = document.getElementById(newId);
+            clickCell(newCell);
+        }
+        if (cellId > 11 && !isLeftEdge) {
+            const newId = parseInt(cellId) - 1 - width;
+            const newCell = document.getElementById(newId);
+            clickCell(newCell);
+        }
+        if (cellId < 98 && !isRightEdge) {
+            const newId = parseInt(cellId) + 1;
+            const newCell = document.getElementById(newId);
+            clickCell(newCell);
+        }
+        if (cellId < 90 && !isLeftEdge) {
+            const newId = parseInt(cellId) - 1 + width;
+            const newCell = document.getElementById(newId);
+            clickCell(newCell);
+        }
+        if (cellId < 88 && !isRightEdge) {
+            const newId = parseInt(cellId) + 1 + width;
+            const newCell = document.getElementById(newId);
+            clickCell(newCell);
+        }
+        if (cellId < 89) {
+            const newId = parseInt(cellId) + width;
+            const newCell = document.getElementById(newId);
+            clickCell(newCell);
+        }
+    }, 10);
+}
+
+function checkWin() {
+    const cells = document.querySelectorAll('.cell');
+    let mineFlaggedCount = 0;
+    cells.forEach(cell => {
+        if (cell.classList.contains('mine') && cell.classList.contains('flag')) {
+            mineFlaggedCount++;
+        }
+    });
+
+    if (mineFlaggedCount === mineCount && cellsOpened + mineCount === width * height) {
+        document.getElementById('status').innerText = 'You Win!';
+        gameOver = true;
+    }
+}
+
+createBoard();
