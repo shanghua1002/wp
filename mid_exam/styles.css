@@ -29,7 +29,7 @@ body {
 .cell {
     width: 30px;
     height: 30px;
-    background-color: ＃FA8072;
+    background-color: #ccc;
     text-align: center;
     line-height: 30px;
     font-size: 18px;
@@ -39,7 +39,7 @@ body {
 }
 
 .cell:hover {
-    background-color: #ccc;
+    background-color: ＃FA8072;
 }
 
 .cell.open {
