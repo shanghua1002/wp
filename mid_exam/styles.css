@@ -39,7 +39,7 @@ body {
 }
 
 .cell:hover {
-    background-color: ＃FA8072;
+    background-color: #ccc;
 }
 
 .cell.open {
