@@ -4,7 +4,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url('R.jpg');
+    background-image: url('R.png');
     background-size: cover;
     background-position: center;
     animation: fadeIn 1s ease-in-out;
@@ -29,7 +29,7 @@ body {
 .cell {
     width: 30px;
     height: 30px;
-    background-color: #ccc;
+    background-color: #ddd;
     text-align: center;
     line-height: 30px;
     font-size: 18px;
